@@ -3,20 +3,26 @@ import 'dart:io';
 import 'package:rxdart/rxdart.dart';
 import 'package:todo_app/bloc/bloc.dart';
 import 'package:todo_app/model/static_strings.dart';
+import 'package:todo_app/model/user.dart';
 import 'package:todo_app/services/authentication_service.dart';
 
 class AuthenticationBloc extends Bloc {
   final AuthenticationService _authenticationService = AuthenticationService();
 
+  final _userController = BehaviorSubject<bool>();
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
   final _errorController = BehaviorSubject<String>();
+
+  Stream<bool> get userStream => _userController.stream;
 
   Stream<String> get emailStream => _emailController.stream;
 
   Stream<String> get passwordStream => _passwordController.stream;
 
   Stream<String> get errorStream => _errorController.stream;
+
+  Function(bool) get changeUser => _userController.sink.add;
 
   Function(String) get changeEmail => _emailController.sink.add;
 
@@ -46,6 +52,12 @@ class AuthenticationBloc extends Bloc {
     return ret;
   }
 
+  authenticateMe() async {
+    bool ret = await _authenticationService.authenticateMe();
+
+    changeUser(ret);
+  }
+
   changeEmailValue(String email) {
     changeEmail(email);
   }
@@ -55,22 +67,21 @@ class AuthenticationBloc extends Bloc {
   }
 
   bool isValidEmail(String email) {
-    if(email == null)
-      return false;
+    if (email == null) return false;
 
     final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     return emailRegExp.hasMatch(email);
   }
 
   bool isValidPassword(String password) {
-    if(password == null)
-      return false;
+    if (password == null) return false;
 
     return password.isNotEmpty;
   }
 
   @override
   void dispose() {
+    _userController.close();
     _emailController.close();
     _passwordController.close();
     _errorController.close();

@@ -4,10 +4,11 @@ import 'package:todo_app/bloc/authentication_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/static_strings.dart';
 import 'package:todo_app/ui/login_screen/login_form/login_button.dart';
+import 'package:todo_app/ui/login_screen/login_form/login_field_email.dart';
+import 'package:todo_app/ui/login_screen/login_form/login_field_password.dart';
+import 'package:todo_app/ui/login_screen/login_screen_title.dart';
+import 'package:todo_app/ui/main_screen/main_screen.dart';
 
-import 'login_form/login_field_password.dart';
-import 'login_form/login_field_email.dart';
-import 'login_screen_title.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -41,12 +42,17 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _loginFunction() async{
+  _loginFunction() async {
     FocusScope.of(context).requestFocus();
     String ret = await _authenticationBloc.performLogin();
 
-    if(ret == invalidCredentials)
+    if (ret == invalidCredentials)
       _showErrorStreamDialog(context, "Invalid credentials");
+
+    if (ret == loginSuccess) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => MainScreen()));
+    }
   }
 
   _showErrorStreamDialog(BuildContext context, String content) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/ui/entry_point.dart';
 import 'package:todo_app/ui/login_screen/login_screen.dart';
 
 void main() {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: LoginScreen(),
+        body: EntryPoint(),
       ),
     );
   }
