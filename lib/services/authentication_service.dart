@@ -34,8 +34,9 @@ class AuthenticationService {
     http.Response response = await http.get(
       uri,
       headers: {
-        HttpHeaders.authorizationHeader: "22|OhVMX10K5LFeVTQet2wGMiuc21xkqNy0BbqtTX85",
-        HttpHeaders.contentTypeHeader: "application/json"
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $accessToken',
       },
     );
 
@@ -45,7 +46,7 @@ class AuthenticationService {
       var json = jsonDecode(response.body);
       User authedUser = User(id: json['id'], firstName: json['first_name'], lastName:json['last_name'], accessToken: json['access_token']);
 
-      if(authedUser == null) {
+      if(authedUser.firstName == null) {
         return false;
       } else {
         loggedUser = authedUser;
@@ -54,6 +55,5 @@ class AuthenticationService {
     } on Exception {
       return false;
     }
-
   }
 }

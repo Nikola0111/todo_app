@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:rxdart/rxdart.dart';
 import 'package:todo_app/bloc/bloc.dart';
-import 'package:todo_app/model/static_strings.dart';
-import 'package:todo_app/model/user.dart';
 import 'package:todo_app/services/authentication_service.dart';
 
 class AuthenticationBloc extends Bloc {

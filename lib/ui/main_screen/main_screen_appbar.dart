@@ -4,10 +4,9 @@ import 'package:todo_app/model/colors.dart';
 
 class MainScreenAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
-  final Function openDrawer;
   final AppBar appBar;
 
-  const MainScreenAppBar({Key key, this.title, this.openDrawer, this.appBar})
+  const MainScreenAppBar({Key key, this.title, this.appBar})
       : super(key: key);
 
   @override
