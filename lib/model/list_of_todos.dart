@@ -13,6 +13,6 @@ class ListOfTodos {
 
   @override
   String toString() {
-    return 'ListOfTodos{id: $id, name: $name}';
+    return 'ListOfTodos{id: $id, name: $name, todos: $todos}';
   }
 }

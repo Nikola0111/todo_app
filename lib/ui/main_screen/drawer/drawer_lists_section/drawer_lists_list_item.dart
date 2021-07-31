@@ -2,23 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
-import 'package:todo_app/services/todo_service.dart';
 
 import 'add_list_dialog.dart';
 
 class DrawerListsListItem extends StatelessWidget {
-  final TodoService _service = TodoService();
-
   final ListOfTodos listOfTodos;
   final Function editButtonFunction;
+  final Function listDetailsFunction;
 
-  DrawerListsListItem({this.listOfTodos, this.editButtonFunction});
+  DrawerListsListItem(
+      {this.listOfTodos, this.editButtonFunction, this.listDetailsFunction});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        _service.getTodosByListID(listOfTodos.id, listOfTodos.name);
+        listDetailsFunction(listOfTodos.id, listOfTodos.name);
         Navigator.of(context).pop();
       },
       child: Container(

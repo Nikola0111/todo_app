@@ -72,18 +72,18 @@ class _TodoListItemState extends State<TodoListItem> {
                 color: drawerTextColor),
           ),
         ),
-        // InkWell(
-        //   onTap: () {},
-        //   child: Container(
-        //     height: 20,
-        //     width: 20,
-        //     child: Icon(
-        //       Icons.edit,
-        //       color: lightGreyText,
-        //       size: 15,
-        //     ),
-        //   ),
-        // )
+        widget.todo.listName == null ? InkWell(
+          onTap: () {},
+          child: Container(
+            height: 20,
+            width: 20,
+            child: Icon(
+              Icons.edit,
+              color: lightGreyText,
+              size: 15,
+            ),
+          ),
+        ) : Container()
       ],
     );
   }
@@ -112,13 +112,13 @@ class _TodoListItemState extends State<TodoListItem> {
                 fontSize: 13),
           ),
         ),
-        Expanded(
+        widget.todo.listName != null ? Expanded(
             child: Text(
-          widget.todo.listName,
-          textAlign: TextAlign.right,
-          style: TextStyle(
-              color: hintInputColor, fontFamily: "OpenSans", fontSize: 13),
-        ))
+              widget.todo.listName,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                  color: hintInputColor, fontFamily: "OpenSans", fontSize: 13),
+            )) : Container()
       ],
     );
   }

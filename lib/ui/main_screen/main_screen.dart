@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/bloc/list_of_todos_bloc.dart';
-import 'package:todo_app/model/list_of_todos.dart';
+import 'package:todo_app/model/main_screen_title_data.dart';
 import 'package:todo_app/ui/common/loading_layer.dart';
 import 'package:todo_app/ui/main_screen/list_of_todos_preview/list_of_todos_preview.dart';
 import 'package:todo_app/ui/main_screen/main_screen_appbar.dart';
@@ -14,31 +14,28 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final ListOfTodosBloc _listOfTodosBloc = ListOfTodosBloc();
-  String _appBarTitle = "Today";
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<ListOfTodos>>(
-        stream: _listOfTodosBloc.previewListOfTodosStream,
-        initialData: <ListOfTodos>[],
+    return StreamBuilder<MainScreenTitleTodoData>(
+        stream: _listOfTodosBloc.mainScreenDataStream,
+        initialData: MainScreenTitleTodoData("", []),
         builder: (context, snapshot) {
           return Stack(
             children: [
               Scaffold(
                 appBar: MainScreenAppBar(
-                  title: _appBarTitle,
+                  title: snapshot.data.title,
                   appBar: AppBar(),
                 ),
                 drawer: MainScreenDrawer(_listOfTodosBloc),
                 body: SingleChildScrollView(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) =>
-                          ListOfTodosPreview(snapshot.data[index]),
-                    ),
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data.listsOfTodos.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) =>
+                        ListOfTodosPreview(snapshot.data.listsOfTodos[index]),
                   ),
                 ),
               ),

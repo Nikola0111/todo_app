@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
 import 'package:todo_app/services/list_of_todos_service.dart';
@@ -8,9 +9,11 @@ import 'package:todo_app/ui/main_screen/drawer/drawer_lists_section/drawer_lists
 
 class ListsDrawerSection extends StatefulWidget {
   final List<ListOfTodos> todos;
+  final ListOfTodosBloc listOfTodosBloc;
 
   const ListsDrawerSection({
     this.todos,
+    this.listOfTodosBloc,
     Key key,
   }) : super(key: key);
 
@@ -90,6 +93,7 @@ class _ListsDrawerSectionState extends State<ListsDrawerSection> {
             itemBuilder: (context, index) => DrawerListsListItem(
               listOfTodos: widget.todos[index],
               editButtonFunction: _editItemInList,
+              listDetailsFunction: widget.listOfTodosBloc.previewTodosOfSpecificList,
             ),
           );
   }

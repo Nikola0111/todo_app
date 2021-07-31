@@ -1,25 +1,29 @@
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:todo_app/bloc/bloc.dart';
 import 'package:todo_app/model/list_of_todos.dart';
+import 'package:todo_app/model/main_screen_title_data.dart';
 import 'package:todo_app/model/todo.dart';
 import 'package:todo_app/services/list_of_todos_service.dart';
 import 'package:todo_app/services/todo_service.dart';
 
 class ListOfTodosBloc extends Bloc {
+  final DateFormat _formatter = DateFormat("dd MMMM yyyy");
   final ListOfTodosService _listOfTodosService = ListOfTodosService();
   final TodoService _todoService = TodoService();
 
-  final _previewListOfTodosController = BehaviorSubject<List<ListOfTodos>>();
+  final _mainScreenDataController = BehaviorSubject<MainScreenTitleTodoData>();
   final _drawerListsOfTodosConroller = BehaviorSubject<List<ListOfTodos>>();
 
-  Stream<List<ListOfTodos>> get previewListOfTodosStream =>
-      _previewListOfTodosController.stream;
+  Stream<MainScreenTitleTodoData> get mainScreenDataStream =>
+      _mainScreenDataController.stream;
 
   Stream<List<ListOfTodos>> get drawerListsOfTodosStream =>
       _drawerListsOfTodosConroller.stream;
 
-  Function(List<ListOfTodos>) get changePreviewListOfTodos =>
-      _previewListOfTodosController.sink.add;
+  Function(MainScreenTitleTodoData) get changeMainScreenData =>
+      _mainScreenDataController.sink.add;
 
   Function(List<ListOfTodos>) get changeDrawerListsOfTodos =>
       _drawerListsOfTodosConroller.sink.add;
@@ -57,7 +61,8 @@ class ListOfTodosBloc extends Bloc {
 
     _mapOfTodos = todos;
 
-    changePreviewListOfTodos(filterOverdueAndTodayTodos());
+    changeMainScreenData(
+        MainScreenTitleTodoData("Today", filterOverdueAndTodayTodos()));
   }
 
   Future<List<ListOfTodos>> getTodoListsByPage() async {
@@ -99,25 +104,106 @@ class ListOfTodosBloc extends Bloc {
     return upomingTodos;
   }
 
-  List<ListOfTodos> getStreamValues() {
-    return _previewListOfTodosController.value;
+  MainScreenTitleTodoData getStreamValues() {
+    return _mainScreenDataController.value;
   }
 
   showOverdueSection() {
+    ListOfTodos overdueTodos = ListOfTodos(name: "Overdue", todos: []);
+    DateTime now = DateTime.now();
+    DateTime currentDate = DateTime(now.year, now.month, now.day);
 
+    _mapOfTodos.forEach((key, value) {
+      if (currentDate.isAfter(key)) {
+        overdueTodos.todos.addAll(value);
+      }
+    });
+
+    List<ListOfTodos> ret = [];
+
+    _reformatPreviewItems(ret, overdueTodos.todos);
+
+    changeMainScreenData(MainScreenTitleTodoData("Overdue", ret));
   }
 
   showTodaySection() {
-
+    changeMainScreenData(
+        MainScreenTitleTodoData("Today", filterOverdueAndTodayTodos()));
   }
 
   showUpcomingSection() {
+    ListOfTodos upcomingTodos = ListOfTodos(name: "Upcoming", todos: []);
+    DateTime now = DateTime.now();
+    DateTime currentDate = DateTime(now.year, now.month, now.day);
 
+    _mapOfTodos.forEach((key, value) {
+      if (currentDate.isBefore(key)) {
+        upcomingTodos.todos.addAll(value);
+      }
+    });
+
+    List<ListOfTodos> ret = [];
+
+    _reformatPreviewItems(ret, upcomingTodos.todos);
+
+    changeMainScreenData(MainScreenTitleTodoData("Upcoming", ret));
+  }
+
+  List<int> getFinishedTodosMaxTodos() {
+    int done = 0;
+    int max = 0;
+
+    _mapOfTodos.forEach((key, value) {
+      max++;
+      for (int i = 0; i < value.length; i++) {
+        if (value[i].done) {
+          done++;
+        }
+      }
+    });
+
+    return [done, max];
+  }
+
+  previewTodosOfSpecificList(int id, String listName) async {
+    List<Todo> temp = await _todoService.getTodosByListID(id, null);
+
+    List<ListOfTodos> ret = [];
+
+    _reformatPreviewItems(ret, temp);
+
+    changeMainScreenData(MainScreenTitleTodoData(listName, ret));
+  }
+
+  _reformatPreviewItems(List<ListOfTodos> ret, List<Todo> formattingValue) {
+    formattingValue.forEach((element) {
+      if (ret.isNotEmpty) {
+        bool elementIsCreated = false;
+        for (int i = 0; i < ret.length; i++) {
+          if (ret[i].name == _formatter.format(element.date)) {
+            elementIsCreated = true;
+            ret[i].todos.add(element);
+            break;
+          }
+        }
+
+        if (!elementIsCreated) {
+          ret.add(ListOfTodos(
+              name: _formatter.format(element.date), todos: [element]));
+        }
+      }
+
+      if (ret.isEmpty) {
+        ret.add(ListOfTodos(
+            name: _formatter.format(element.date), todos: [element]));
+      }
+
+    });
   }
 
   @override
   void dispose() {
-    _previewListOfTodosController.close();
+    _mainScreenDataController.close();
     _drawerListsOfTodosConroller.close();
   }
 }

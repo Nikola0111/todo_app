@@ -20,6 +20,9 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
   ListOfTodos today;
   ListOfTodos upcoming;
 
+  int completedTodos;
+  int maxTodos;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -45,13 +48,14 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
                     )),
               ),
               OverdueTodayUpcomingDrawerSection(
+                listOfTodosBloc: widget._listOfTodosBloc,
                 overdue: overdue.todos.length.toString(),
                 today: today.todos.length.toString(),
                 upcoming: upcoming.todos.length.toString(),
               ),
               Container(
                 margin: EdgeInsets.only(top: 15),
-                child: ListsDrawerSection(todos: snapshot.data),
+                child: ListsDrawerSection(todos: snapshot.data, listOfTodosBloc: widget._listOfTodosBloc,),
               )
             ],
           ),
@@ -69,6 +73,10 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
     overdue = list[0];
     today = list[1];
     upcoming = widget._listOfTodosBloc.filterUpcomingTodos();
+
+    List<int> completedTasksMaxTasks = widget._listOfTodosBloc.getFinishedTodosMaxTodos();
+    completedTodos = completedTasksMaxTasks[0];
+    maxTodos = completedTasksMaxTasks[1];
   }
 
   Column _buildUserInfo() {
@@ -82,7 +90,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
               fontFamily: "OpenSans", fontSize: 15, color: drawerTextColor),
         ),
         Text(
-          "0/5 tasks done",
+          "$completedTodos/$maxTodos",
           style: TextStyle(
               fontFamily: "OpenSans", fontSize: 13, color: lightGreyText),
         )

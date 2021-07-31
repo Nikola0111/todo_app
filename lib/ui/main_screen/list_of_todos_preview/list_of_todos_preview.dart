@@ -19,16 +19,17 @@ class ListOfTodosPreview extends StatefulWidget {
 
 class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
   final TodoService _todoService = TodoService();
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(margin: EdgeInsets.symmetric(horizontal: 28),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 28),
             width: double.infinity,
             decoration: BoxDecoration(
                 border:
@@ -45,16 +46,18 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
                       fontWeight: FontWeight.w600,
                       fontSize: 17),
                 )),
-                widget._listOfTodos.name == "Overdue" ? Expanded(
-                  child: Text(
-                    "Reschedule",
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                        color: focusedInputBorder,
-                        fontFamily: "OpenSans",
-                        fontSize: 15),
-                  ),
-                ) : Container()
+                widget._listOfTodos.name == "Overdue"
+                    ? Expanded(
+                        child: Text(
+                          "Reschedule",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                              color: focusedInputBorder,
+                              fontFamily: "OpenSans",
+                              fontSize: 15),
+                        ),
+                      )
+                    : Container()
               ],
             ),
           ),
@@ -64,7 +67,7 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
             shrinkWrap: true,
             itemBuilder: (context, index) => Slidable(
               child: TodoListItem(
-                checkFunction: _completeTodoFunction,
+                  checkFunction: _completeTodoFunction,
                   todo: widget._listOfTodos.todos[index],
                   isOverdue:
                       widget._listOfTodos.name == "Overdue" ? true : false),
@@ -86,7 +89,7 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
       ),
     );
   }
-  
+
   _completeTodoFunction(int id, bool status) {
     _todoService.changeTodoStatus(id, status);
   }
