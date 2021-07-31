@@ -14,11 +14,13 @@ class ListOfTodosBloc extends Bloc {
 
   Stream<List<ListOfTodos>> get previewListOfTodosStream =>
       _previewListOfTodosController.stream;
+
   Stream<List<ListOfTodos>> get drawerListsOfTodosStream =>
       _drawerListsOfTodosConroller.stream;
 
   Function(List<ListOfTodos>) get changePreviewListOfTodos =>
       _previewListOfTodosController.sink.add;
+
   Function(List<ListOfTodos>) get changeDrawerListsOfTodos =>
       _drawerListsOfTodosConroller.sink.add;
 
@@ -31,12 +33,11 @@ class ListOfTodosBloc extends Bloc {
     changeDrawerListsOfTodos(todoList);
 
     for (int i = 0; i < todoList.length; i++) {
-      List<Todo> temp = await _todoService.getTodosByListID(
-          todoList[i].id,
-          todoList[i].name);
+      List<Todo> temp =
+          await _todoService.getTodosByListID(todoList[i].id, todoList[i].name);
 
       temp.forEach((element) {
-        if(!element.done) {
+        if (!element.done) {
           if (todos.containsKey(element.date)) {
             List<Todo> existingTodos = todos[element.date];
             existingTodos.add(element);
@@ -51,7 +52,6 @@ class ListOfTodosBloc extends Bloc {
             todos[element.date] = newTodosValue;
           }
         }
-
       });
     }
 
@@ -84,8 +84,35 @@ class ListOfTodosBloc extends Bloc {
     return [overdueTodos, todayTodos];
   }
 
+  ListOfTodos filterUpcomingTodos() {
+    ListOfTodos upomingTodos = ListOfTodos(name: "Upcoming", todos: []);
+
+    DateTime now = DateTime.now();
+    DateTime currentDate = DateTime(now.year, now.month, now.day);
+
+    _mapOfTodos.forEach((key, value) {
+      if (currentDate.isBefore(key)) {
+        upomingTodos.todos.addAll(value);
+      }
+    });
+
+    return upomingTodos;
+  }
+
   List<ListOfTodos> getStreamValues() {
     return _previewListOfTodosController.value;
+  }
+
+  showOverdueSection() {
+
+  }
+
+  showTodaySection() {
+
+  }
+
+  showUpcomingSection() {
+
   }
 
   @override

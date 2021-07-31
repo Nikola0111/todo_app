@@ -28,9 +28,9 @@ class TodoService {
     return ret;
   }
 
-  changeTodoStatus(int id) async {
+  changeTodoStatus(int id, bool status) async {
     Uri uri = Uri.parse("${baseUrl}tasks/$id/status");
-    var body = {"done": true};
+    var body = {"done": status};
 
     await http.patch(uri,
         headers: {
@@ -39,5 +39,14 @@ class TodoService {
           'Authorization': 'Bearer $accessToken',
         },
         body: jsonEncode(body));
+  }
+
+  deleteTodo(int id) async {
+    Uri uri = Uri.parse("${baseUrl}tasks/$id");
+
+    await http.delete(uri,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+        },);
   }
 }

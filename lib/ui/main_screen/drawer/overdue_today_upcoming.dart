@@ -61,7 +61,7 @@ class OverdueTodayUpcomingDrawerSection extends StatelessWidget {
                       margin: EdgeInsets.only(right: 20),
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "3",
+                        upcoming,
                         style: TextStyle(
                             fontFamily: "OpenSans",
                             fontWeight: FontWeight.w600,
@@ -105,7 +105,7 @@ class OverdueTodayUpcomingDrawerSection extends StatelessWidget {
                       margin: EdgeInsets.only(right: 20),
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "3",
+                        today,
                         style: TextStyle(
                             fontFamily: "OpenSans",
                             fontWeight: FontWeight.w600,
@@ -148,7 +148,7 @@ class OverdueTodayUpcomingDrawerSection extends StatelessWidget {
                       margin: EdgeInsets.only(right: 20),
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "2",
+                        overdue,
                         style: TextStyle(
                             fontFamily: "OpenSans",
                             fontWeight: FontWeight.w600,

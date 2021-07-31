@@ -28,7 +28,7 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          Container(margin: EdgeInsets.symmetric(horizontal: 28),
             width: double.infinity,
             decoration: BoxDecoration(
                 border:
@@ -64,18 +64,19 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
             shrinkWrap: true,
             itemBuilder: (context, index) => Slidable(
               child: TodoListItem(
+                checkFunction: _completeTodoFunction,
                   todo: widget._listOfTodos.todos[index],
-                  checkFunction: completeTodoFunction,
                   isOverdue:
                       widget._listOfTodos.name == "Overdue" ? true : false),
               actionPane: SlidableDrawerActionPane(),
-              actionExtentRatio: 0.16,
+              actionExtentRatio: 0.2,
               secondaryActions: [
                 SlideAction(
                   child: Icon(
                     Icons.delete,
                     color: Colors.white,
                   ),
+                  onTap: () => _deleteTodo(widget._listOfTodos.todos[index].id),
                   color: focusedInputBorder,
                 )
               ],
@@ -86,37 +87,14 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
     );
   }
   
-  completeTodoFunction(int id) {
-    _todoService.changeTodoStatus(id);
-    
-    removeItemAfterTwoSec(id);
+  _completeTodoFunction(int id, bool status) {
+    _todoService.changeTodoStatus(id, status);
   }
 
-  Timer _timer;
-  int _start = 2;
-
-  void removeItemAfterTwoSec(int id) {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-          (Timer timer) {
-        if (_start == 0) {
-          setState(() {
-            timer.cancel();
-            widget._listOfTodos.todos.removeWhere((element) => element.id == id);
-          });
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
+  _deleteTodo(int id) {
+    _todoService.deleteTodo(id);
+    setState(() {
+      widget._listOfTodos.todos.removeWhere((element) => element.id == id);
+    });
   }
 }

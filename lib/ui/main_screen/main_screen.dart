@@ -33,7 +33,6 @@ class _MainScreenState extends State<MainScreen> {
                 body: SingleChildScrollView(
                   child: Container(
                     height: MediaQuery.of(context).size.height,
-                    margin: EdgeInsets.only(left: 28, right: 28),
                     child: ListView.builder(
                       itemCount: snapshot.data.length,
                       shrinkWrap: true,
@@ -55,5 +54,11 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _listOfTodosBloc.getListsAndTodos();
+  }
+
+  @override
+  void dispose() {
+    _listOfTodosBloc.dispose();
+    super.dispose();
   }
 }

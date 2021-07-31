@@ -23,12 +23,19 @@ class _TodoListItemState extends State<TodoListItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: appBarColor, width: 1))),
+      padding: EdgeInsets.only(top: 10, left: 28, right: 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [_buildFirstRow(), _buildSecondRow()],
+        children: [
+          _buildFirstRow(),
+          _buildSecondRow(),
+          Container(
+            padding: EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+                border:
+                    Border(bottom: BorderSide(color: appBarColor, width: 1))),
+          )
+        ],
       ),
     );
   }
@@ -41,12 +48,14 @@ class _TodoListItemState extends State<TodoListItem> {
               value: isChecked,
               activeColor: focusedInputBorder,
               shape: CircleBorder(),
-              onChanged: widget.isOverdue ? null : (value) {
-                widget.checkFunction(widget.todo.id);
-                setState(() {
-                  isChecked = !isChecked;
-                });
-              }),
+              onChanged: widget.isOverdue
+                  ? null
+                  : (value) {
+                      widget.checkFunction(widget.todo.id, value);
+                      setState(() {
+                        isChecked = !isChecked;
+                      });
+                    }),
           height: 24,
           width: 24,
         ),
@@ -98,7 +107,9 @@ class _TodoListItemState extends State<TodoListItem> {
               widget.todo.date,
             ),
             style: TextStyle(
-                color: widget.isOverdue ? errorTextColor : hintInputColor, fontFamily: "OpenSans", fontSize: 13),
+                color: widget.isOverdue ? errorTextColor : hintInputColor,
+                fontFamily: "OpenSans",
+                fontSize: 13),
           ),
         ),
         Expanded(

@@ -16,39 +16,59 @@ class MainScreenDrawer extends StatefulWidget {
 }
 
 class _MainScreenDrawerState extends State<MainScreenDrawer> {
+  ListOfTodos overdue;
+  ListOfTodos today;
+  ListOfTodos upcoming;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       initialData: <ListOfTodos>[],
       stream: widget._listOfTodosBloc.drawerListsOfTodosStream,
       builder: (context, snapshot) {
-      return Drawer(
-        child: ListView(
-          children: [
-            Container(
-              height: 120,
-              child: DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: appBarColor,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildProfileImage(),
-                      SizedBox(width: 10),
-                      _buildUserInfo()
-                    ],
-                  )),
-            ),
-            OverdueTodayUpcomingDrawerSection(),
-            Container(
-              margin: EdgeInsets.only(top: 15),
-              child: ListsDrawerSection(todos: snapshot.data),
-            )
-          ],
-        ),
-      );
-    },);
+        return Drawer(
+          child: ListView(
+            children: [
+              Container(
+                height: 120,
+                child: DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: appBarColor,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildProfileImage(),
+                        SizedBox(width: 10),
+                        _buildUserInfo()
+                      ],
+                    )),
+              ),
+              OverdueTodayUpcomingDrawerSection(
+                overdue: overdue.todos.length.toString(),
+                today: today.todos.length.toString(),
+                upcoming: upcoming.todos.length.toString(),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 15),
+                child: ListsDrawerSection(todos: snapshot.data),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    List<ListOfTodos> list =
+        widget._listOfTodosBloc.filterOverdueAndTodayTodos();
+
+    overdue = list[0];
+    today = list[1];
+    upcoming = widget._listOfTodosBloc.filterUpcomingTodos();
   }
 
   Column _buildUserInfo() {
