@@ -61,8 +61,8 @@ class ListOfTodosService {
 
     var json = jsonDecode(response.body);
 
-    return ListOfTodos.fromJSON(json);
+    ListOfTodos ret = ListOfTodos.fromJSON(json);
+
+    return ret;
   }
-
-
 }

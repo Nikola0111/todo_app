@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
+import 'package:todo_app/model/values.dart';
 import 'package:todo_app/services/list_of_todos_service.dart';
 import 'package:todo_app/ui/main_screen/drawer/drawer_lists_section/add_list_dialog.dart';
 import 'package:todo_app/ui/main_screen/drawer/drawer_lists_section/drawer_lists_list_item.dart';
@@ -101,6 +102,11 @@ class _ListsDrawerSectionState extends State<ListsDrawerSection> {
   _editItemInList(ListOfTodos listOfTodos) async {
     ListOfTodos ret = await _service.updateListName(listOfTodos);
 
+    if(ret.name == null) {
+      showListAlreadyExistsDialog();
+      return;
+    }
+
     for (int i = 0; i < widget.todos.length; i++) {
       if (widget.todos[i].id == ret.id) {
         setState(() {
@@ -116,5 +122,12 @@ class _ListsDrawerSectionState extends State<ListsDrawerSection> {
     setState(() {
       widget.todos.add(ret);
     });
+  }
+
+  showListAlreadyExistsDialog() {
+    return showDialog(context: context, builder: (context) => AlertDialog(
+      title: Text("Name of list already exists!"),
+      actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text("Close", style: createTaskTitleStyle,))],
+    ));
   }
 }

@@ -10,3 +10,5 @@ final searchButtonColor = Color(0xFF213546);
 final appBarColor = Color(0xFFEAEAEA);
 final loadingIndicatorColor = Color(0xFFE2F1FF);
 final drawerTextColor = Color(0xFF3D4148);
+final createTaskBorder = Color(0xFF1B2E3D);
+final white = Color(0xFFFFFFFF);

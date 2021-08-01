@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/model/colors.dart';
+import 'package:todo_app/model/values.dart';
 
 class BottomSheetTaskNameField extends StatefulWidget {
   final ValueChanged<String> onTaskNameChanged;
@@ -20,16 +21,15 @@ class _BottomSheetTaskNameFieldState extends State<BottomSheetTaskNameField> {
       children: [
         Text(
           "Task Name",
-          style: TextStyle(
-              color: darkText,
-              fontWeight: FontWeight.w600,
-              fontFamily: "OpenSans",
-              fontSize: 15),
+          style: createTaskTitleStyle,
         ),
+        SizedBox(height: 12),
         TextFormField(
+          textCapitalization: TextCapitalization.sentences,
+          focusNode: FocusNode(canRequestFocus: false),
           onChanged: (value) => widget.onTaskNameChanged(value),
           decoration: InputDecoration(
-            hintText: "Enter your email",
+            hintText: "Enter Task Name",
             hintStyle: TextStyle(
                 fontFamily: "OpenSans", fontSize: 15, color: hintInputColor),
             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -47,7 +47,7 @@ class _BottomSheetTaskNameFieldState extends State<BottomSheetTaskNameField> {
         ),
         Container(
           margin: EdgeInsets.only(top: 4),
-          child: Text("Hint: Task name should be 4 letters long",
+          child: Text("Hint: Task name should be minimum 4 letters long",
               style: TextStyle(
                   color: lightGreyText, fontSize: 11, fontFamily: "OpenSans")),
         ),

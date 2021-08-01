@@ -33,7 +33,19 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 drawer: MainScreenDrawer(_listOfTodosBloc),
                 floatingActionButton: FabOpenBottomSheet(
-                  showBottomSheetFunction: () => Scaffold.of(context).showBottomSheet((context) => CreateTaskBottomSheet()),
+                  showBottomSheetFunction: () => showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10))),
+                    context: context,
+                    builder: (context) => Scrollbar(
+                        isAlwaysShown: true,
+                        child: SingleChildScrollView(
+                            child: CreateTaskBottomSheet(
+                                _listOfTodosBloc.getListNames(),
+                                _listOfTodosBloc))),
+                  ),
                 ),
                 body: SingleChildScrollView(
                   child: ListView.builder(
@@ -52,7 +64,6 @@ class _MainScreenState extends State<MainScreen> {
           );
         });
   }
-
 
   @override
   void initState() {

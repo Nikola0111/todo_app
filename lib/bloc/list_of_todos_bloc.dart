@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:todo_app/bloc/bloc.dart';
@@ -61,15 +60,14 @@ class ListOfTodosBloc extends Bloc {
 
     _mapOfTodos = todos;
 
-    changeMainScreenData(
-        MainScreenTitleTodoData("Today", filterOverdueAndTodayTodos()));
+    filterOverdueAndTodayTodos(true);
   }
 
   Future<List<ListOfTodos>> getTodoListsByPage() async {
     return await _listOfTodosService.getUsersListsByPage();
   }
 
-  List<ListOfTodos> filterOverdueAndTodayTodos() {
+  filterOverdueAndTodayTodos(bool publishData) {
     ListOfTodos overdueTodos = ListOfTodos(name: "Overdue", todos: []);
     ListOfTodos todayTodos = ListOfTodos(name: "Today", todos: []);
 
@@ -85,6 +83,10 @@ class ListOfTodosBloc extends Bloc {
         overdueTodos.todos.addAll(value);
       }
     });
+
+    if (publishData)
+      changeMainScreenData(
+          MainScreenTitleTodoData("Today", [overdueTodos, todayTodos]));
 
     return [overdueTodos, todayTodos];
   }
@@ -108,6 +110,10 @@ class ListOfTodosBloc extends Bloc {
     return _mainScreenDataController.value;
   }
 
+  List<ListOfTodos> getListNames() {
+    return _drawerListsOfTodosConroller.value;
+  }
+
   showOverdueSection() {
     ListOfTodos overdueTodos = ListOfTodos(name: "Overdue", todos: []);
     DateTime now = DateTime.now();
@@ -127,8 +133,7 @@ class ListOfTodosBloc extends Bloc {
   }
 
   showTodaySection() {
-    changeMainScreenData(
-        MainScreenTitleTodoData("Today", filterOverdueAndTodayTodos()));
+    filterOverdueAndTodayTodos(true);
   }
 
   showUpcomingSection() {
@@ -197,8 +202,32 @@ class ListOfTodosBloc extends Bloc {
         ret.add(ListOfTodos(
             name: _formatter.format(element.date), todos: [element]));
       }
-
     });
+  }
+
+  createTask(Todo todo, int listID) async {
+    Todo newTodo = await _todoService.createTodo(
+        Todo(date: todo.date, listName: todo.listName, todo: todo.todo),
+        listID);
+
+    List<Todo> currentTodos = _mapOfTodos[newTodo.date];
+    if(currentTodos == null) {
+      currentTodos = [todo];
+
+    } else {
+      currentTodos.add(newTodo);
+    }
+
+    _mapOfTodos[newTodo.date] = currentTodos;
+
+    DateTime now = DateTime.now();
+    if(newTodo.date.isAtSameMomentAs(DateTime(now.year, now.month, now.day))) {
+      showTodaySection();
+    }
+
+    if(newTodo.date.isAfter(DateTime(now.year, now.month, now.day))) {
+      showUpcomingSection();
+    }
   }
 
   @override

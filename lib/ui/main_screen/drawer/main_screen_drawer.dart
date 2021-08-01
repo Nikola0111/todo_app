@@ -68,7 +68,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
   void initState() {
     super.initState();
     List<ListOfTodos> list =
-        widget._listOfTodosBloc.filterOverdueAndTodayTodos();
+        widget._listOfTodosBloc.filterOverdueAndTodayTodos(false);
 
     overdue = list[0];
     today = list[1];

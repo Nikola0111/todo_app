@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:todo_app/model/todo.dart';
 import 'package:todo_app/model/values.dart';
 
 class TodoService {
+  DateFormat _formatter = DateFormat("yyyy-MM-dd");
+
   getTodosByListID(int id, String listName) async {
     List<Todo> ret = [];
 
@@ -44,9 +47,34 @@ class TodoService {
   deleteTodo(int id) async {
     Uri uri = Uri.parse("${baseUrl}tasks/$id");
 
-    await http.delete(uri,
+    await http.delete(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+  }
+
+  createTodo(Todo newTodo, int listID) async {
+    Uri uri = Uri.parse("${baseUrl}lists/$listID/tasks");
+    var body = {
+      "name": newTodo.todo,
+      "due_date":
+          _formatter.format(newTodo.date)
+    };
+
+    http.Response response = await http.post(uri,
         headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer $accessToken',
-        },);
+        },
+        body: jsonEncode(body));
+
+    var json = jsonDecode(response.body);
+    Todo databaseTodo =
+        Todo.fromJSON(json: json, nameOfTheList: newTodo.listName);
+
+    return databaseTodo;
   }
 }
