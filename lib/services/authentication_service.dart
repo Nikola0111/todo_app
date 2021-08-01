@@ -29,7 +29,7 @@ class AuthenticationService {
     return loginSuccess;
   }
 
-  Future<bool> authenticateMe() async{
+  Future<User> authenticateMe() async{
     Uri uri = Uri.parse("${baseUrl}auth/me");
     http.Response response = await http.get(
       uri,
@@ -47,13 +47,13 @@ class AuthenticationService {
       User authedUser = User(id: json['id'], firstName: json['first_name'], lastName:json['last_name'], accessToken: json['access_token']);
 
       if(authedUser.firstName == null) {
-        return false;
+        return null;
       } else {
         loggedUser = authedUser;
-        return true;
+        return authedUser;
       }
     } on Exception {
-      return false;
+      return null;
     }
   }
 }

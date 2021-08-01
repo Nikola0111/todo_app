@@ -1,5 +1,6 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:todo_app/bloc/bloc.dart';
+import 'package:todo_app/model/values.dart';
 import 'package:todo_app/services/authentication_service.dart';
 
 class AuthenticationBloc extends Bloc {
@@ -35,6 +36,8 @@ class AuthenticationBloc extends Bloc {
     if (conditionEmail && conditionPassword) {
       ret = await _authenticationService.performLogin(
           _emailController.value, _passwordController.value);
+
+      loggedUser = await _authenticationService.authenticateMe();
     }
 
     if (!conditionEmail) {
@@ -46,12 +49,6 @@ class AuthenticationBloc extends Bloc {
     }
 
     return ret;
-  }
-
-  authenticateMe() async {
-    bool ret = await _authenticationService.authenticateMe();
-
-    changeUser(ret);
   }
 
   changeEmailValue(String email) {

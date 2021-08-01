@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
+import 'package:todo_app/model/values.dart';
 import 'package:todo_app/ui/main_screen/drawer/drawer_lists_section/lists_drawer_section.dart';
 import 'package:todo_app/ui/main_screen/drawer/overdue_today_upcoming.dart';
 
@@ -85,7 +86,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "Nikola Milosevic",
+          "${loggedUser.firstName} ${loggedUser.lastName}",
           style: TextStyle(
               fontFamily: "OpenSans", fontSize: 15, color: drawerTextColor),
         ),
