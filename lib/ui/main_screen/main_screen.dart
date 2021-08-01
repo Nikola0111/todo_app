@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/main_screen_title_data.dart';
 import 'package:todo_app/ui/common/loading_layer.dart';
+import 'package:todo_app/ui/main_screen/fab_open_bottom_sheet/fab_open_bottom_sheet.dart';
 import 'package:todo_app/ui/main_screen/list_of_todos_preview/list_of_todos_preview.dart';
 import 'package:todo_app/ui/main_screen/main_screen_appbar.dart';
 import 'package:todo_app/ui/main_screen/drawer/main_screen_drawer.dart';
+
+import 'create_task_bottom_sheet/create_task_bottom_sheet.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -29,6 +32,9 @@ class _MainScreenState extends State<MainScreen> {
                   appBar: AppBar(),
                 ),
                 drawer: MainScreenDrawer(_listOfTodosBloc),
+                floatingActionButton: FabOpenBottomSheet(
+                  showBottomSheetFunction: () => Scaffold.of(context).showBottomSheet((context) => CreateTaskBottomSheet()),
+                ),
                 body: SingleChildScrollView(
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
@@ -46,6 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           );
         });
   }
+
 
   @override
   void initState() {
