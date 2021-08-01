@@ -149,7 +149,7 @@ class ListOfTodosBloc extends Bloc {
 
     List<ListOfTodos> ret = [];
 
-    _reformatPreviewItems(ret, upcomingTodos.todos);
+    _reformatUpcomingPreviewItems(ret, upcomingTodos.todos);
 
     changeMainScreenData(MainScreenTitleTodoData("Upcoming", ret));
   }
@@ -201,6 +201,24 @@ class ListOfTodosBloc extends Bloc {
       if (ret.isEmpty) {
         ret.add(ListOfTodos(
             name: _formatter.format(element.date), todos: [element]));
+      }
+    });
+  }
+
+  _reformatUpcomingPreviewItems(List<ListOfTodos> ret, List<Todo> formattingValue) {
+    DateTime now = DateTime.now();
+
+    for(int i = 1; i <= 4; i++) {
+      ListOfTodos temp = ListOfTodos(name: _formatter.format(now.add(Duration(days: i))), todos: []);
+
+      ret.add(temp);
+    }
+
+    formattingValue.forEach((element) {
+      for(int i = 0;i < ret.length; i++) {
+        if(_formatter.format(element.date) == ret[i].name) {
+          ret[i].todos.add(element);
+        }
       }
     });
   }
