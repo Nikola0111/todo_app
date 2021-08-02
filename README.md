@@ -23,3 +23,5 @@ Nisam bio siguran kako funkcionise evidencija todo-ova u `DrawerHeader` sekciji,
 ## Unapredjenja resenja
 
 Pored zavrsavanja svih funkcionalnosti, jedno od mogucih unapredjenja resenja bi bilo nalazenje nacina da `ListOfTodosBloc` ima samo jednu instancu koju onda nije potrebno prosledjivati u konstruktorima kako je uradjeno u zadatku, cime bi se onda klasa mogla rastaviti na vise manjih delova. Pada mi na pamet dependency injection putem getX paketa ili da se rucno implementira, ali nisam siguran da li je to moguce posto se dependency injection koristi obicno u kombinaciji sa servisima. 
+
+Takodje smislio bih neki drugi nacin za filtriranje podataka pri ucitavanju ekrana, nested for loops postaju previse time consuming kako se dodaju novi todo-ovi
