@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/todo.dart';
+import 'package:todo_app/ui/main_screen/list_of_todos_preview/edit_todo_dialog.dart';
 
 class TodoListItem extends StatefulWidget {
   final Todo todo;
   final bool isOverdue;
   final Function checkFunction;
+  final Function updateFunction;
 
-  TodoListItem({this.todo, this.isOverdue, this.checkFunction});
+  TodoListItem({this.todo, this.isOverdue, this.checkFunction, this.updateFunction});
 
   @override
   State createState() => _TodoListItemState();
@@ -73,7 +75,9 @@ class _TodoListItemState extends State<TodoListItem> {
           ),
         ),
         widget.todo.listName == null ? InkWell(
-          onTap: () {},
+          onTap: () {
+            showEditTodoDialog();
+          },
           child: Container(
             height: 20,
             width: 20,
@@ -121,5 +125,16 @@ class _TodoListItemState extends State<TodoListItem> {
             )) : Container()
       ],
     );
+  }
+
+  showEditTodoDialog() {
+    return showDialog(context: context, builder: (context) => EditTodoDialog(saveFunction: editTodo,));
+  }
+
+  editTodo(String todoName) async{
+    await widget.updateFunction(widget.todo.id, todoName, widget.todo.date);
+    setState(() {
+      widget.todo.todo = todoName;
+    });
   }
 }

@@ -158,8 +158,8 @@ class ListOfTodosBloc extends Bloc {
     int max = 0;
 
     _mapOfTodos.forEach((key, value) {
-      max++;
       for (int i = 0; i < value.length; i++) {
+        max++;
         if (value[i].done) {
           done++;
         }
@@ -224,10 +224,14 @@ class ListOfTodosBloc extends Bloc {
     });
   }
 
-  createTask(Todo todo, int listID) async {
+  Future<bool> createTask(Todo todo, int listID) async {
     Todo newTodo = await _todoService.createTodo(
         Todo(date: todo.date, listName: todo.listName, todo: todo.todo),
         listID);
+
+    if(newTodo.id == null) {
+      return false;
+    }
 
     List<Todo> currentTodos = _mapOfTodos[newTodo.date];
     if (currentTodos == null) {
@@ -246,11 +250,31 @@ class ListOfTodosBloc extends Bloc {
     if (newTodo.date.isAfter(DateTime(now.year, now.month, now.day))) {
       showUpcomingSection();
     }
+
+    return true;
   }
 
   changeTodoStatus(int id, bool status) {
     return _todoService.changeTodoStatus(id, status);
   }
+
+  Future<bool> updateTodo(int id, String todo, DateTime dateTime) async{
+    await _todoService.updateTodo(id, todo);
+
+    List<Todo> todos = _mapOfTodos[dateTime];
+
+    for (int i = 0; i < todos.length; i++) {
+      if (todos[i].id == id) {
+        todos[i].todo = todo;
+        break;
+      }
+    }
+
+    _mapOfTodos[dateTime] = todos;
+
+    return true;
+  }
+
 
   updateTodoInMap(int id, bool status, DateTime dateTime) {
     List<Todo> todos = _mapOfTodos[dateTime];
@@ -261,6 +285,23 @@ class ListOfTodosBloc extends Bloc {
         break;
       }
     }
+
+    _mapOfTodos[dateTime] = todos;
+  }
+
+  deleteTodo(int id, DateTime date) {
+    _todoService.deleteTodo(id);
+
+    List<Todo> listOfTodos = _mapOfTodos[date];
+
+    for(int i = 0; i < listOfTodos.length; i++) {
+      if(listOfTodos[i].id == id) {
+        listOfTodos.removeAt(i);
+        break;
+      }
+    }
+
+    _mapOfTodos[date] = listOfTodos;
   }
 
   @override

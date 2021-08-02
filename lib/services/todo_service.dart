@@ -50,6 +50,25 @@ class TodoService {
     return true;
   }
 
+  Future<bool> updateTodo(int id, String name) async {
+    Uri uri = Uri.parse("${baseUrl}tasks/$id");
+    var body = {"name": name};
+
+    try {
+      await http.put(uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+          body: jsonEncode(body));
+    } on Exception {
+      return false;
+    }
+
+    return true;
+  }
+
   deleteTodo(int id) async {
     Uri uri = Uri.parse("${baseUrl}tasks/$id");
 
@@ -70,20 +89,21 @@ class TodoService {
     };
 
     Todo databaseTodo;
-    try {
-      http.Response response = await http.post(uri,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
-          },
-          body: jsonEncode(body));
+    http.Response response = await http.post(uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode(body));
 
-      var json = jsonDecode(response.body);
+    var json = jsonDecode(response.body);
+
+    try{
       databaseTodo =
           Todo.fromJSON(json: json, nameOfTheList: newTodo.listName);
     } on Exception {
-      return null;
+      return Todo();
     }
 
     return databaseTodo;

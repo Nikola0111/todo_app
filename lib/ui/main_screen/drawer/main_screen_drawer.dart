@@ -77,7 +77,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
 
     List<int> completedTasksMaxTasks = widget._listOfTodosBloc.getFinishedTodosMaxTodos();
     completedTodos = completedTasksMaxTasks[0];
-    maxTodos = completedTasksMaxTasks[1] + overdue.todos.length;
+    maxTodos = completedTasksMaxTasks[1];
   }
 
   Column _buildUserInfo() {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
-import 'package:todo_app/model/values.dart';
 import 'package:todo_app/services/list_of_todos_service.dart';
 import 'package:todo_app/ui/common/error_dialog.dart';
 import 'package:todo_app/ui/main_screen/drawer/drawer_lists_section/add_list_dialog.dart';

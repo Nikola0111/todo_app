@@ -7,6 +7,7 @@ import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
 import 'package:todo_app/services/todo_service.dart';
+import 'package:todo_app/ui/common/error_dialog.dart';
 import 'package:todo_app/ui/main_screen/list_of_todos_preview/todo_list_item.dart';
 
 class ListOfTodosPreview extends StatefulWidget {
@@ -20,8 +21,6 @@ class ListOfTodosPreview extends StatefulWidget {
 }
 
 class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
-  final TodoService _todoService = TodoService();
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -71,6 +70,7 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
               child: widget._listOfTodos.todos[index].done
                   ? Container()
                   : TodoListItem(
+                      updateFunction: _updateTodo,
                       checkFunction: _updateTodoStatus,
                       todo: widget._listOfTodos.todos[index],
                       isOverdue:
@@ -83,7 +83,8 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
                     Icons.delete,
                     color: Colors.white,
                   ),
-                  onTap: () => _deleteTodo(widget._listOfTodos.todos[index].id),
+                  onTap: () => _deleteTodo(widget._listOfTodos.todos[index].id,
+                      widget._listOfTodos.todos[index].date),
                   color: focusedInputBorder,
                 )
               ],
@@ -102,8 +103,12 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
     }
   }
 
-  _deleteTodo(int id) {
-    _todoService.deleteTodo(id);
+  _updateTodo(int id, String todo, DateTime dateTime) async {
+    await widget._listOfTodosBloc.updateTodo(id, todo, dateTime);
+  }
+
+  _deleteTodo(int id, DateTime date) {
+    widget._listOfTodosBloc.deleteTodo(id, date);
     setState(() {
       widget._listOfTodos.todos.removeWhere((element) => element.id == id);
     });

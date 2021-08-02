@@ -4,6 +4,7 @@ import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
 import 'package:todo_app/model/todo.dart';
+import 'package:todo_app/ui/common/error_dialog.dart';
 import 'package:todo_app/ui/main_screen/create_task_bottom_sheet/bottom_sheet_task_name_field.dart';
 import 'package:todo_app/ui/main_screen/create_task_bottom_sheet/select_date_bottom_sheet.dart';
 import 'package:todo_app/ui/main_screen/create_task_bottom_sheet/select_todo_list_bottom_sheet.dart';
@@ -12,14 +13,14 @@ class CreateTaskBottomSheet extends StatefulWidget {
   final List<ListOfTodos> _listOfTodoTitles;
   final ListOfTodosBloc _listOfTodosBloc;
 
-  CreateTaskBottomSheet(this._listOfTodoTitles, this._listOfTodosBloc);
+  CreateTaskBottomSheet(
+      this._listOfTodoTitles, this._listOfTodosBloc);
 
   @override
   State createState() => _CreateTaskBottomSheetState();
 }
 
 class _CreateTaskBottomSheetState extends State<CreateTaskBottomSheet> {
-
   String taskName = "";
   DateTime date;
   ListOfTodos chosenList;
@@ -76,16 +77,26 @@ class _CreateTaskBottomSheetState extends State<CreateTaskBottomSheet> {
     );
   }
 
-  createTodo() {
-    if(date == null) {
+  createTodo() async {
+    if (date == null) {
       date = DateTime.now();
     }
 
-    widget._listOfTodosBloc.createTask(
+    bool succeeded = await widget._listOfTodosBloc.createTask(
         Todo(date: date, listName: chosenList.name, todo: taskName),
         chosenList.id);
 
+    if (!succeeded) {
+      return showErrorDialog(
+          "Todo with given name already exists in the selected list");
+    }
+
     Navigator.of(context).pop();
+  }
+
+  showErrorDialog(String title) {
+    return showDialog(
+        context: context, builder: (context) => ErrorDialog(title));
   }
 
   @override
