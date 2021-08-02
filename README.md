@@ -1,16 +1,16 @@
 # todo_app
 
-A task managing app
+## Nedovrsene funkcionalnosti
+Zbog obima zadatak i nedostatka vremena tokom prosle nedelje nisam stigao da implementiram sledece funkcionalnosti: kalendar u upcoming, ucitavanje dodatnih 10 lista, ali imam ideju kako bih uradio.
 
-## Getting Started
+U klasi `ListsDrawerSection` bih kreirao `ScrollController`, i na njega dodao listener koji bi se trigerovao svaki put kada bi korisnik skrolovao do dna `ListView`-a koji je zaduzen za prikaz listi. Taj event bih detektovao putem 2 uslova, prvi je `_scrollController.pixels.atEdge` a drugi nesto slicno `_scrollController.pixels == MediaQuery.of(context).size.height` (u sustini pokusao bih da nekako dobijem dno ekrana. Ako su zadovoljeni uslovi pokazao bih loader i ucitao nove liste, i procesuirao podatke opet i dodao ih u mapu sa `Todo` objektima. I naravno, taj controller bih dodelio `ListView.builder`-u koji je zaduzen za prikazivanje naziva lista.
 
-This project is a starting point for a Flutter application.
+## Autentifikacija pri pokretanju app
+Autentifikaciju odmah pri pokretanju app nakon splash ekrana nije implementirana jer je za auth/me poziv potreban `access_token` koji se dobija samo pri uspesnom loginu, a njega nemam pri pokretanju app. Jedno moguce resenje za to je da cuvam `access_token` lokalno na telefonu i onda da ga ucitam pri pokretanju app.
 
-A few resources to get you started if this is your first Flutter project:
+## Reschedule u overdue sekciji i search 
+Nije u potpunosti bilo jasno kako Reschedule funkcionise, da li se odnosi na sve todo-ove ili se mozda kada se klikne na Reschedule promeni ui tako da overdue todo-ovi imaju chechbox pored sebe na primer pa se selektuju kojim se menja datum, pa je za to samo UI odradjen. Takodje za search nije naznaceno da li je pretraga po sekciji nazivu todo-a.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Unapredjenja resenja
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Pored zavrsavanja svih funkcionalnosti, jedno od mogucih unapredjenja resenja bi bilo nalazenje nacina da `ListOfTodosBloc` ima samo jednu instancu koju onda nije potrebno prosledjivati u konstruktorima kako je uradjeno u zadatku, cime bi se onda klasa mogla rastaviti na vise manjih delova. Pada mi na pamet dependency injection putem getX paketa ili da se rucno implementira, ali nisam siguran da li je to moguce posto se dependency injection koristi obicno u kombinaciji sa servisima. 
