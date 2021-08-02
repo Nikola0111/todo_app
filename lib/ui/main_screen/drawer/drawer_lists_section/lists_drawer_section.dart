@@ -5,15 +5,16 @@ import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
 import 'package:todo_app/model/values.dart';
 import 'package:todo_app/services/list_of_todos_service.dart';
+import 'package:todo_app/ui/common/error_dialog.dart';
 import 'package:todo_app/ui/main_screen/drawer/drawer_lists_section/add_list_dialog.dart';
 import 'package:todo_app/ui/main_screen/drawer/drawer_lists_section/drawer_lists_list_item.dart';
 
 class ListsDrawerSection extends StatefulWidget {
-  final List<ListOfTodos> todos;
+  final List<ListOfTodos> listsOfTodos;
   final ListOfTodosBloc listOfTodosBloc;
 
   const ListsDrawerSection({
-    this.todos,
+    this.listsOfTodos,
     this.listOfTodosBloc,
     Key key,
   }) : super(key: key);
@@ -90,11 +91,12 @@ class _ListsDrawerSectionState extends State<ListsDrawerSection> {
         : ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
-            itemCount: widget.todos.length,
+            itemCount: widget.listsOfTodos.length,
             itemBuilder: (context, index) => DrawerListsListItem(
-              listOfTodos: widget.todos[index],
+              listOfTodos: widget.listsOfTodos[index],
               editButtonFunction: _editItemInList,
-              listDetailsFunction: widget.listOfTodosBloc.previewTodosOfSpecificList,
+              listDetailsFunction:
+                  widget.listOfTodosBloc.previewTodosOfSpecificList,
             ),
           );
   }
@@ -102,15 +104,19 @@ class _ListsDrawerSectionState extends State<ListsDrawerSection> {
   _editItemInList(ListOfTodos listOfTodos) async {
     ListOfTodos ret = await _service.updateListName(listOfTodos);
 
-    if(ret.name == null) {
+    if (ret == null) {
+      showServerErrorDialog();
+      return;
+    }
+    if (ret.name == null) {
       showListAlreadyExistsDialog();
       return;
     }
 
-    for (int i = 0; i < widget.todos.length; i++) {
-      if (widget.todos[i].id == ret.id) {
+    for (int i = 0; i < widget.listsOfTodos.length; i++) {
+      if (widget.listsOfTodos[i].id == ret.id) {
         setState(() {
-          widget.todos[i] = ret;
+          widget.listsOfTodos[i] = ret;
         });
       }
     }
@@ -119,15 +125,26 @@ class _ListsDrawerSectionState extends State<ListsDrawerSection> {
   _addNewListToListOfLists(ListOfTodos listOfTodos) async {
     ListOfTodos ret = await _service.createList(listOfTodos);
 
+    if (ret.name == null) {
+      showListAlreadyExistsDialog();
+      return;
+    }
+
     setState(() {
-      widget.todos.add(ret);
+      widget.listsOfTodos.add(ret);
     });
   }
 
   showListAlreadyExistsDialog() {
-    return showDialog(context: context, builder: (context) => AlertDialog(
-      title: Text("Name of list already exists!"),
-      actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text("Close", style: createTaskTitleStyle,))],
-    ));
+    return showDialog(
+        context: context,
+        builder: (context) => ErrorDialog("Name of list already exists"));
+  }
+
+  showServerErrorDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            ErrorDialog("Server error! Please try again later."));
   }
 }

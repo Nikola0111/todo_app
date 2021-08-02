@@ -51,7 +51,7 @@ class _TodoListItemState extends State<TodoListItem> {
               onChanged: widget.isOverdue
                   ? null
                   : (value) {
-                      widget.checkFunction(widget.todo.id, value);
+                      widget.checkFunction(widget.todo.id, value, widget.todo.date);
                       setState(() {
                         isChecked = !isChecked;
                       });

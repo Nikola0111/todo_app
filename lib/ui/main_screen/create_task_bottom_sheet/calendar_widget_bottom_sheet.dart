@@ -58,10 +58,12 @@ class _CalendarWidgetBottomSheetState extends State<CalendarWidgetBottomSheet> {
         return Container();
       },
       onDayPressed: (DateTime date, List<String> events) {
-        widget.onDateChanged(date);
-        setState(() {
-          selectedDate = date;
-        });
+        if(!comparingMonth.isAfter(date)) {
+          widget.onDateChanged(date);
+          setState(() {
+            selectedDate = date;
+          });
+        }
       },
     );
   }

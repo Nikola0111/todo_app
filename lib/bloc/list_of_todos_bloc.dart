@@ -40,20 +40,18 @@ class ListOfTodosBloc extends Bloc {
           await _todoService.getTodosByListID(todoList[i].id, todoList[i].name);
 
       temp.forEach((element) {
-        if (!element.done) {
-          if (todos.containsKey(element.date)) {
-            List<Todo> existingTodos = todos[element.date];
-            existingTodos.add(element);
+        if (todos.containsKey(element.date)) {
+          List<Todo> existingTodos = todos[element.date];
+          existingTodos.add(element);
 
-            todos[element.date] = existingTodos;
-          }
+          todos[element.date] = existingTodos;
+        }
 
-          if (!todos.containsKey(element.date)) {
-            List<Todo> newTodosValue = [];
-            newTodosValue.add(element);
+        if (!todos.containsKey(element.date)) {
+          List<Todo> newTodosValue = [];
+          newTodosValue.add(element);
 
-            todos[element.date] = newTodosValue;
-          }
+          todos[element.date] = newTodosValue;
         }
       });
     }
@@ -245,6 +243,21 @@ class ListOfTodosBloc extends Bloc {
 
     if(newTodo.date.isAfter(DateTime(now.year, now.month, now.day))) {
       showUpcomingSection();
+    }
+  }
+
+  changeTodoStatus(int id, bool status) {
+    return _todoService.changeTodoStatus(id, status);
+  }
+
+  updateTodoInMap(int id, bool status, DateTime dateTime) {
+    List<Todo> todos = _mapOfTodos[dateTime];
+
+    for(int i = 0; i < todos.length; i++) {
+      if(todos[i].id == id) {
+        todos[i].done = status;
+        break;
+      }
     }
   }
 

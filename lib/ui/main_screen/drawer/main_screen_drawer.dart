@@ -56,7 +56,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
               ),
               Container(
                 margin: EdgeInsets.only(top: 15),
-                child: ListsDrawerSection(todos: snapshot.data, listOfTodosBloc: widget._listOfTodosBloc,),
+                child: ListsDrawerSection(listsOfTodos: snapshot.data, listOfTodosBloc: widget._listOfTodosBloc,),
               )
             ],
           ),
@@ -77,7 +77,7 @@ class _MainScreenDrawerState extends State<MainScreenDrawer> {
 
     List<int> completedTasksMaxTasks = widget._listOfTodosBloc.getFinishedTodosMaxTodos();
     completedTodos = completedTasksMaxTasks[0];
-    maxTodos = completedTasksMaxTasks[1];
+    maxTodos = completedTasksMaxTasks[1] + overdue.todos.length;
   }
 
   Column _buildUserInfo() {

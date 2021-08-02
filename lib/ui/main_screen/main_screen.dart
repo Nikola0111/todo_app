@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
                     itemCount: snapshot.data.listsOfTodos.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) =>
-                        ListOfTodosPreview(snapshot.data.listsOfTodos[index]),
+                        ListOfTodosPreview(snapshot.data.listsOfTodos[index], _listOfTodosBloc),
                   ),
                 ),
               ),

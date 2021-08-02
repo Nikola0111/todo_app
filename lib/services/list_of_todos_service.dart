@@ -33,17 +33,24 @@ class ListOfTodosService {
 
     var body = jsonEncode({"name": listOfTodos.name});
 
-    http.Response response = await http.post(uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-        },
-        body: body);
+    ListOfTodos ret;
+    try {
+      http.Response response = await http.post(uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+          body: body);
 
-    var json = jsonDecode(response.body);
+      var json = jsonDecode(response.body);
 
-    return ListOfTodos.fromJSON(json);
+      ret = ListOfTodos.fromJSON(json);
+    } on Exception {
+      return null;
+    }
+
+    return ret;
   }
 
   Future<ListOfTodos> updateListName(ListOfTodos listOfTodos) async {
@@ -51,17 +58,22 @@ class ListOfTodosService {
 
     var body = jsonEncode({"name": listOfTodos.name});
 
-    http.Response response = await http.put(uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-        },
-        body: body);
+    ListOfTodos ret;
+    try {
+      http.Response response = await http.put(uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+          body: body);
 
-    var json = jsonDecode(response.body);
+      var json = jsonDecode(response.body);
 
-    ListOfTodos ret = ListOfTodos.fromJSON(json);
+      ret = ListOfTodos.fromJSON(json);
+    } on Exception {
+      return null;
+    }
 
     return ret;
   }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo_app/bloc/list_of_todos_bloc.dart';
 import 'package:todo_app/model/colors.dart';
 import 'package:todo_app/model/list_of_todos.dart';
 import 'package:todo_app/services/todo_service.dart';
@@ -10,8 +11,9 @@ import 'package:todo_app/ui/main_screen/list_of_todos_preview/todo_list_item.dar
 
 class ListOfTodosPreview extends StatefulWidget {
   final ListOfTodos _listOfTodos;
+  final ListOfTodosBloc _listOfTodosBloc;
 
-  ListOfTodosPreview(this._listOfTodos);
+  ListOfTodosPreview(this._listOfTodos, this._listOfTodosBloc);
 
   @override
   State createState() => _ListOfTodosPreviewState();
@@ -66,11 +68,13 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
             itemCount: widget._listOfTodos.todos.length,
             shrinkWrap: true,
             itemBuilder: (context, index) => Slidable(
-              child: TodoListItem(
-                  checkFunction: _completeTodoFunction,
-                  todo: widget._listOfTodos.todos[index],
-                  isOverdue:
-                      widget._listOfTodos.name == "Overdue" ? true : false),
+              child: widget._listOfTodos.todos[index].done
+                  ? Container()
+                  : TodoListItem(
+                      checkFunction: _updateTodoStatus,
+                      todo: widget._listOfTodos.todos[index],
+                      isOverdue:
+                          widget._listOfTodos.name == "Overdue" ? true : false),
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.2,
               secondaryActions: [
@@ -90,8 +94,12 @@ class _ListOfTodosPreviewState extends State<ListOfTodosPreview> {
     );
   }
 
-  _completeTodoFunction(int id, bool status) {
-    _todoService.changeTodoStatus(id, status);
+  _updateTodoStatus(int id, bool status, DateTime dateTime) async {
+    bool succeeded = await widget._listOfTodosBloc.changeTodoStatus(id, status);
+
+    if (succeeded) {
+      widget._listOfTodosBloc.updateTodoInMap(id, status, dateTime);
+    }
   }
 
   _deleteTodo(int id) {
