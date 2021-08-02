@@ -32,6 +32,7 @@ class ListOfTodosBloc extends Bloc {
   getListsAndTodos() async {
     Map todos = Map<DateTime, List<Todo>>();
     List<ListOfTodos> todoList = await getTodoListsByPage();
+    todoList.sort((a, b) => a.dateOfCreation.isAfter(b.dateOfCreation) ? 2 : 1);
 
     changeDrawerListsOfTodos(todoList);
 
@@ -203,18 +204,20 @@ class ListOfTodosBloc extends Bloc {
     });
   }
 
-  _reformatUpcomingPreviewItems(List<ListOfTodos> ret, List<Todo> formattingValue) {
+  _reformatUpcomingPreviewItems(
+      List<ListOfTodos> ret, List<Todo> formattingValue) {
     DateTime now = DateTime.now();
 
-    for(int i = 1; i <= 4; i++) {
-      ListOfTodos temp = ListOfTodos(name: _formatter.format(now.add(Duration(days: i))), todos: []);
+    for (int i = 1; i <= 4; i++) {
+      ListOfTodos temp = ListOfTodos(
+          name: _formatter.format(now.add(Duration(days: i))), todos: []);
 
       ret.add(temp);
     }
 
     formattingValue.forEach((element) {
-      for(int i = 0;i < ret.length; i++) {
-        if(_formatter.format(element.date) == ret[i].name) {
+      for (int i = 0; i < ret.length; i++) {
+        if (_formatter.format(element.date) == ret[i].name) {
           ret[i].todos.add(element);
         }
       }
@@ -227,9 +230,8 @@ class ListOfTodosBloc extends Bloc {
         listID);
 
     List<Todo> currentTodos = _mapOfTodos[newTodo.date];
-    if(currentTodos == null) {
+    if (currentTodos == null) {
       currentTodos = [todo];
-
     } else {
       currentTodos.add(newTodo);
     }
@@ -237,11 +239,11 @@ class ListOfTodosBloc extends Bloc {
     _mapOfTodos[newTodo.date] = currentTodos;
 
     DateTime now = DateTime.now();
-    if(newTodo.date.isAtSameMomentAs(DateTime(now.year, now.month, now.day))) {
+    if (newTodo.date.isAtSameMomentAs(DateTime(now.year, now.month, now.day))) {
       showTodaySection();
     }
 
-    if(newTodo.date.isAfter(DateTime(now.year, now.month, now.day))) {
+    if (newTodo.date.isAfter(DateTime(now.year, now.month, now.day))) {
       showUpcomingSection();
     }
   }
@@ -253,8 +255,8 @@ class ListOfTodosBloc extends Bloc {
   updateTodoInMap(int id, bool status, DateTime dateTime) {
     List<Todo> todos = _mapOfTodos[dateTime];
 
-    for(int i = 0; i < todos.length; i++) {
-      if(todos[i].id == id) {
+    for (int i = 0; i < todos.length; i++) {
+      if (todos[i].id == id) {
         todos[i].done = status;
         break;
       }
