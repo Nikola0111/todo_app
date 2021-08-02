@@ -1,5 +1,7 @@
 # todo_app
 
+Resenje je implementirano pomocu flutter verzije 2.2.3. Ako bude bilo problema u todo_list_item.dart klasi pri pokretanju, uklonite `shape` property i probajte pokrenuti opet. Ako je problem negde drugde u projektu mozete me kontaktirati.
+
 ## Nedovrsene funkcionalnosti
 
 Zbog obima zadatak i nedostatka vremena tokom prosle nedelje nisam stigao da implementiram sledece funkcionalnosti: kalendar u upcoming, ucitavanje dodatnih 10 lista, ali imam ideju kako bih uradio.
